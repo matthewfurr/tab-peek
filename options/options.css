@@ -1,0 +1,264 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --text: #1f2328;
+  --muted: #656d76;
+  --line: #e4e6ea;
+  --track: #d0d4da;
+  --accent: #4f46e5;
+  --strip: #dfe3e8;
+  --tab: #ffffff;
+  --tab-text: #3c4043;
+  --segment-bg: #eef0f3;
+  --segment-on: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #202124;
+    --text: #e8eaed;
+    --muted: #9aa0a6;
+    --line: #3c4043;
+    --track: #5f6368;
+    --accent: #818cf8;
+    --strip: #161618;
+    --tab: #3c3c3f;
+    --tab-text: #e3e3e3;
+    --segment-bg: #2d2e31;
+    --segment-on: #4a4b4f;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px 24px 20px;
+  min-width: 420px;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Helvetica Neue", sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 0.92em;
+  text-align: center;
+}
+
+code {
+  font-size: 0.92em;
+}
+
+a {
+  color: var(--accent);
+}
+
+/* Preview strip */
+.preview {
+  margin: 18px 0 4px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--strip);
+}
+
+.strip {
+  display: flex;
+  gap: 2px;
+  padding: 8px 8px 0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px 8px 0 0;
+  color: var(--tab-text);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: var(--tab);
+}
+
+.tab img {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.tab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rows */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+label.row {
+  cursor: pointer;
+}
+
+.row.disabled .title,
+.row.disabled .swatches {
+  opacity: 0.45;
+}
+
+.text {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+
+.title {
+  font-weight: 550;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+footer {
+  padding-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Switch */
+input[role="switch"] {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin: 0;
+  border-radius: 11px;
+  background: var(--track);
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+input[role="switch"]::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+  transition: transform 0.18s ease;
+}
+
+input[role="switch"]:checked {
+  background: var(--accent);
+}
+
+input[role="switch"]:checked::after {
+  transform: translateX(16px);
+}
+
+input:focus-visible + *,
+input[role="switch"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Radio groups: the real inputs are hidden, their label content is styled. */
+.swatches input,
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatches label {
+  cursor: pointer;
+}
+
+.swatch {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+  transition: transform 0.12s ease;
+}
+
+.swatches label:hover .swatch {
+  transform: scale(1.12);
+}
+
+.swatches input:checked + .swatch {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--swatch);
+}
+
+.swatches input:disabled + .swatch {
+  cursor: default;
+  transform: none;
+}
+
+.segmented {
+  display: flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--segment-bg);
+}
+
+.segmented label span {
+  display: block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.segmented input:checked + span {
+  background: var(--segment-on);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  font-weight: 550;
+}

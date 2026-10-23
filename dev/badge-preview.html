@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Badge preview</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f6f7f9;
+        color: #1f2328;
+        font: 13px/1.4 system-ui, -apple-system, sans-serif;
+      }
+      h2 { margin: 24px 0 8px; font-size: 13px; font-weight: 600; color: #656d76; }
+      .strip { display: flex; gap: 2px; padding: 8px 8px 0; border-radius: 10px 10px 0 0; }
+      .strip.light { background: #dfe3e8; }
+      .strip.dark { background: #1f1f1f; }
+      .tab {
+        display: flex; align-items: center; gap: 8px;
+        width: 150px; height: 34px; padding: 0 10px;
+        border-radius: 8px 8px 0 0; overflow: hidden; white-space: nowrap;
+      }
+      .tab.narrow { width: 36px; }
+      .light .tab { color: #3c4043; }
+      .light .tab.active { background: #fff; }
+      .dark .tab { color: #c4c7c5; }
+      .dark .tab.active { background: #3c3c3c; color: #fff; }
+      .tab img { width: 16px; height: 16px; flex: none; }
+      .tab span { overflow: hidden; text-overflow: ellipsis; }
+      .zoom { display: flex; gap: 12px; }
+      .zoom img { width: 96px; height: 96px; image-rendering: pixelated; background: #fff; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <h2>Tab strip, light (title prefix + favicon badge)</h2>
+    <div class="strip light" id="light"></div>
+    <h2>Tab strip, dark</h2>
+    <div class="strip dark" id="dark"></div>
+    <h2>Narrow tabs (favicon only)</h2>
+    <div class="strip light" id="narrow"></div>
+    <h2>Zoomed 6×</h2>
+    <div class="zoom" id="zoom"></div>
+
+    <script type="module">
+      import { SIZE, drawOverlay, drawTile } from '../src/badge.js';
+
+      // Stand-in favicons covering the hard cases: light, dark, busy and full-bleed icons.
+      function sample(draw) {
+        const c = new OffscreenCanvas(SIZE, SIZE);
+        draw(c.getContext('2d'));
+        return c;
+      }
+      const samples = [
+        { title: 'Inbox (3) – Gmail', icon: sample((x) => { x.fillStyle = '#fff'; x.fillRect(2, 6, 28, 20); x.strokeStyle = '#ea4335'; x.lineWidth = 4; x.strokeRect(4, 8, 24, 16); x.beginPath(); x.moveTo(4, 8); x.lineTo(16, 18); x.lineTo(28, 8); x.stroke(); }) },
+        { title: 'GitHub', icon: sample((x) => { x.fillStyle = '#111'; x.beginPath(); x.arc(16, 16, 15, 0, 7); x.fill(); }) },
+        { title: 'Jira – Board', icon: sample((x) => { x.fillStyle = '#2684ff'; x.beginPath(); x.moveTo(16, 1); x.lineTo(31, 16); x.lineTo(16, 31); x.lineTo(1, 16); x.fill(); }) },
+        { title: 'Google Docs', icon: sample((x) => { x.fillStyle = '#4285f4'; x.fillRect(6, 2, 20, 28); x.fillStyle = '#fff'; for (let y = 10; y < 26; y += 5) x.fillRect(10, y, 12, 2); }) },
+        { title: 'Slack', icon: sample((x) => { const c = ['#e01e5a', '#36c5f0', '#2eb67d', '#ecb22e']; c.forEach((col, i) => { x.fillStyle = col; x.fillRect(i % 2 ? 17 : 3, i < 2 ? 3 : 17, 12, 12); }); }) },
+        { title: 'Figma', icon: sample((x) => { x.fillStyle = '#a259ff'; x.fillRect(0, 0, 32, 32); }) },
+        { title: 'YouTube', icon: sample((x) => { x.fillStyle = '#ff0000'; x.beginPath(); x.roundRect(1, 6, 30, 20, 6); x.fill(); x.fillStyle = '#fff'; x.beginPath(); x.moveTo(13, 11); x.lineTo(21, 16); x.lineTo(13, 21); x.fill(); }) },
+        { title: 'Untitled page', icon: null },
+        { title: 'Last tab', icon: sample((x) => { x.fillStyle = '#34a853'; x.beginPath(); x.arc(16, 16, 14, 0, 7); x.fill(); }) },
+      ];
+      const labels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+      async function badged(icon, label) {
+        const c = new OffscreenCanvas(SIZE, SIZE);
+        const ctx = c.getContext('2d');
+        if (icon) drawOverlay(ctx, icon, label);
+        else drawTile(ctx, label);
+        return URL.createObjectURL(await c.convertToBlob());
+      }
+
+      const urls = await Promise.all(samples.map((s, i) => badged(s.icon, labels[i])));
+
+      function strip(id, { narrow = false, count = samples.length } = {}) {
+        const el = document.getElementById(id);
+        samples.slice(0, count).forEach((s, i) => {
+          const tab = document.createElement('div');
+          tab.className = 'tab' + (i === 2 ? ' active' : '') + (narrow ? ' narrow' : '');
+          tab.innerHTML = `<img src="${urls[i]}"><span>${labels[i]} · ${s.title}</span>`;
+          el.append(tab);
+        });
+      }
+      strip('light', { count: 6 });
+      strip('dark', { count: 6 });
+      strip('narrow', { narrow: true });
+
+      for (const url of urls) {
+        const img = document.createElement('img');
+        img.src = url;
+        document.getElementById('zoom').append(img);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Peek",
+  "version": "0.2.0",
+  "description": "Hold ⌘ to see each tab's ⌘1–⌘9 number right on the tab.",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_title": "Tab Peek options",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "commands": {
+    "show-numbers": {
+      "description": "Show tab numbers for a few seconds (works on every page)",
+      "suggested_key": {
+        "default": "Ctrl+Shift+9",
+        "mac": "Command+Shift+9"
+      }
+    }
+  },
+  "permissions": ["tabs", "tabGroups", "scripting", "storage", "favicon"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": false
+  }
+}

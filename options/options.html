@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tab Peek options</title>
+    <link rel="stylesheet" href="options.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body>
+    <header>
+      <img src="../icons/48.png" width="40" height="40" alt="" />
+      <div>
+        <h1>Tab Peek</h1>
+        <p>Hold <kbd>⌘</kbd> to see each tab's shortcut number.</p>
+      </div>
+    </header>
+
+    <div class="preview" aria-hidden="true">
+      <div class="strip" id="preview"></div>
+    </div>
+
+    <label class="row">
+      <span class="text">
+        <span class="title">Show number on favicon</span>
+        <span class="hint">Adds a number badge to each tab's icon, for tabs too narrow to show a title.</span>
+      </span>
+      <input type="checkbox" id="faviconBadge" role="switch" />
+    </label>
+
+    <div class="row" id="accentRow">
+      <span class="text">
+        <span class="title" id="accentLabel">Badge color</span>
+      </span>
+      <div class="swatches" id="accent" role="radiogroup" aria-labelledby="accentLabel"></div>
+    </div>
+
+    <div class="row">
+      <span class="text">
+        <span class="title" id="holdLabel">Hold delay</span>
+        <span class="hint">How long to hold <kbd>⌘</kbd> before numbers appear.</span>
+      </span>
+      <div class="segmented" id="holdDelay" role="radiogroup" aria-labelledby="holdLabel"></div>
+    </div>
+
+    <footer>
+      On pages Chrome doesn't let extensions run on, like <code>chrome://</code> pages and the Web Store,
+      press <kbd id="shortcut">⌘⇧9</kbd> instead. <a href="#" id="shortcuts">Change shortcut</a>
+    </footer>
+  </body>
+</html>
